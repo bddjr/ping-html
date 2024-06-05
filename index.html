@@ -25,10 +25,12 @@
             while (true) {
                 const p = document.createElement('p')
                 let text
+                let ms = 0
                 try {
                     const t = Date.now()
                     await fetch('./ok.txt', { signal: AbortSignal.timeout(2000) })
-                    text = `${Date.now() - t}ms`
+                    ms = Date.now() - t
+                    text = `${ms}ms`
 
                 } catch (e) {
                     console.log(e)
@@ -42,7 +44,9 @@
                 if (document.body.scrollHeight - (scrollY + innerHeight) < p.clientHeight * 1.5) {
                     scroll(0, document.body.scrollHeight)
                 }
-                await sleep(1000)
+                if (ms < 1000) {
+                    await sleep(1000 - ms)
+                }
             }
         })()
     </script>
