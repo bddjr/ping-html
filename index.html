@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ping-html</title>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+    </style>
+    <meta name="robots" content="noindex">
+</head>
+
+<body>
+    <h1>Ping ./ok.txt</h1>
+    <main id="main"></main>
+    <script>
+        function sleep(t) {
+            return new Promise((res, rej) => setTimeout(res, t))
+        }
+        (async () => {
+            await sleep(500)
+            while (true) {
+                const p = document.createElement('p')
+                let text
+                try {
+                    const t = Date.now()
+                    await fetch('./ok.txt', { signal: AbortSignal.timeout(2000) })
+                    text = `${Date.now() - t}ms`
+
+                } catch (e) {
+                    console.log(e)
+                    text = e
+                }
+                p.innerText = `[${new Date().toLocaleString()}] ${text}`
+                main.appendChild(p)
+                if (main.childElementCount > 65535) {
+                    main.removeChild(main.firstChild)
+                }
+                if (document.body.scrollHeight - (scrollY + innerHeight) < p.clientHeight * 1.5) {
+                    scroll(0, document.body.scrollHeight)
+                }
+                await sleep(1000)
+            }
+        })()
+    </script>
+</body>
+
+</html>
